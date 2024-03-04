@@ -170,8 +170,17 @@ def nfa_to_dfa(nfa, start_state, final_states):
 regex_solution = list(solutions.values())[0]  # Берем первое решение как регулярное выражение
 nfa = construct_nfa(regex_solution)
 
+
+nfa_test = {
+    'start': {'0': {'A'}, '1': {'B'}},
+    'A': {'0': {'A'}, '1': {'B'}},
+    'B': {'0': {'A'}, '1': {'end'}},
+    'end': {}
+}
+
+
 # Преобразование НКА в ДКА
-dfa_states, dfa_transitions, dfa_alphabet, dfa_start_state, dfa_final_states = nfa_to_dfa(nfa, 'start', {'end'})
+dfa_states, dfa_transitions, dfa_alphabet, dfa_start_state, dfa_final_states = nfa_to_dfa(nfa_test, 'start', {'end'})
 
 # Отрисовка НКА и ДКА в графвиз
 nfa.layout(prog='dot')
