@@ -95,6 +95,31 @@ for key, value in solutions.items():
     print(f"{key}: {value}")
 
 
+# def construct_nfa(regex_solution):
+#     G = pgv.AGraph(strict=False, directed=True)
+#
+#     # Добавляем начальное и конечное состояния
+#     G.add_node('start', shape='point')
+#     G.add_node('end', shape='doublecircle')
+#
+#     # Преобразуем значение regex_solution в строку
+#     regex_solution = str(regex_solution)
+#
+#     # Добавляем ребра в НКА
+#     for i, char in enumerate(regex_solution):
+#         G.add_node(str(i))
+#         G.add_edge('start', str(i), label=char)
+#         if i < len(regex_solution) - 1:
+#             G.add_edge(str(i), str(i + 1), label='ε')
+#         else:
+#             G.add_edge(str(i), 'end', label='ε')
+#
+#     return G
+#
+# # Построение НКА по регулярному выражению
+# regex_solution = list(solutions.values())[0]  # Берем первое решение как регулярное выражение
+# nfa = construct_nfa(regex_solution)
+
 def construct_nfa(regex_solution):
     G = pgv.AGraph(strict=False, directed=True)
 
@@ -124,101 +149,83 @@ nfa = construct_nfa(regex_solution)
 nfa.layout(prog='dot')
 nfa.draw('nfa.png')
 
-def epsilon_closure(states, transitions, epsilon='ε'):
-    e_closure = set(states)
-    stack = list(states)
-    while stack:
-        state = stack.pop()
-        if state in transitions and epsilon in transitions[state]:
-            new_states = transitions[state][epsilon]
-            for new_state in new_states:
-                if new_state not in e_closure:
-                    e_closure.add(new_state)
-                    stack.append(new_state)
-    return frozenset(e_closure)
+import numpy as np
+import pygraphviz as pgv
 
+def epsilon_closure(nfa, states):
+    epsilon_states = set(states)
+    stack = list(epsilon_states)
 
-
-# Построение НКА по регулярному выражению
-regex_solution = list(solutions.values())[0]  # Берем первое решение как регулярное выражение
-nfa = construct_nfa(regex_solution)
-
-print(nfa)
-
-
-nfa_test = {
-    'start': {'0': {'A'}, '1': {'B'}},
-    'A': {'0': {'A'}, '1': {'B'}},
-    'B': {'0': {'A'}, '1': {'end'}},
-    'end': {}
-}
-
-import re
-
-
-def parse_nfa(dot_format):
-    nfa = {}
-    dot_str = dot_format.string()  # Получаем строковое представление графа
-    transitions = re.findall(r'(\w+)\s*->\s*(\w+)\s*\[label\s*=\s*"?(.*?)"?\]', dot_str)
-
-    for start_state, end_state, label in transitions:
-        if start_state not in nfa:
-            nfa[start_state] = {}
-        if label != 'ε':
-            if label not in nfa[start_state]:
-                nfa[start_state][label] = set()
-            nfa[start_state][label].add(end_state)
-
-    return nfa
-
-def nfa_to_dfa(nfa, start_state, final_states):
-    dfa_states = {}  # Состояния ДКА
-    dfa_transitions = {}  # Переходы ДКА
-    dfa_alphabet = set()  # Алфавит ДКА
-    dfa_start_state = epsilon_closure({start_state}, nfa)  # Начальное состояние ДКА
-    dfa_states[dfa_start_state] = 0  # Нумерация состояний ДКА
-    dfa_final_states = set()  # Конечные состояния ДКА
-
-    stack = [dfa_start_state]
     while stack:
         current_state = stack.pop()
-        dfa_transitions[current_state] = {}
-        for symbol in nfa[list(current_state)[0]]:
-            dfa_alphabet.add(symbol)
-            next_states = set()
-            for state in current_state:
-                if state in nfa and symbol in nfa[state]:
-                    next_states |= nfa[state][symbol]
-            next_state = epsilon_closure(next_states, nfa)
-            if next_state:
-                if next_state not in dfa_states:
-                    dfa_states[next_state] = len(dfa_states)
-                    stack.append(next_state)
-                dfa_transitions[current_state][symbol] = next_state
-                if final_states & next_state:
-                    dfa_final_states.add(next_state)
+        if current_state in nfa and 'ε' in nfa[current_state]:
+            for state in nfa[current_state]['ε']:
+                if state not in epsilon_states:
+                    epsilon_states.add(state)
+                    stack.append(state)
 
-    return dfa_states, dfa_transitions, dfa_alphabet, dfa_start_state, dfa_final_states
+    return epsilon_states
 
-# nfa_test = parse_nfa(nfa)
+def move(nfa, states, symbol):
+    next_states = set()
+    for state in states:
+        if state in nfa and symbol in nfa[state]:
+            next_states.update(nfa[state][symbol])
+    return next_states
 
-# Преобразование НКА в ДКА
-dfa_states, dfa_transitions, dfa_alphabet, dfa_start_state, dfa_final_states = nfa_to_dfa(nfa_test, 'start', {'end'})
+def nfa_to_dfa(nfa):
+    dfa = {}
+    alphabet = set()
+    start_state = frozenset(epsilon_closure(nfa, {'start'}))
+    dfa[start_state] = {}
+    stack = [start_state]
 
-# Отрисовка НКА и ДКА в графвиз
-nfa.layout(prog='dot')
-nfa.draw('nfa.png')
+    while stack:
+        current_states = stack.pop()
+        for symbol in nfa['alphabet']:
+            alphabet.add(symbol)
+            next_states = frozenset(epsilon_closure(nfa, move(nfa, current_states, symbol)))
+            dfa[current_states][symbol] = next_states
+            if next_states not in dfa:
+                dfa[next_states] = {}
+                stack.append(next_states)
 
-dfa = pgv.AGraph(strict=False, directed=True)
-for state, state_id in dfa_states.items():
-    dfa.add_node(state_id, label=str(state), shape='circle')
-    if state == dfa_start_state:
-        dfa.get_node(state_id).attr['shape'] = 'doublecircle'
-    if state in dfa_final_states:
-        dfa.get_node(state_id).attr['shape'] = 'doublecircle'
-        for from_state, transitions in dfa_transitions.items():
-            for symbol, to_state in transitions.items():
-                dfa.add_edge(dfa_states[from_state], dfa_states[to_state], label=symbol)
+    return dfa, alphabet
 
-dfa.layout(prog='dot')
-dfa.draw('dfa.png')
+# Конвертация графа НКА в формат, совместимый с функцией nfa_to_dfa
+def convert_nfa_to_dict(nfa):
+    nfa_dict = {}
+    nfa_dict['alphabet'] = set()
+    for edge in nfa.edges():
+        source = edge[0]
+        target = edge[1]
+        symbol = nfa.get_edge(source, target).attr['label']
+        if symbol != 'ε':
+            nfa_dict['alphabet'].add(symbol)
+        if source not in nfa_dict:
+            nfa_dict[source] = {}
+        if symbol not in nfa_dict[source]:
+            nfa_dict[source][symbol] = set()
+        nfa_dict[source][symbol].add(target)
+    return nfa_dict
+
+# Преобразование графа НКА в словарь
+nfa_dict = convert_nfa_to_dict(nfa)
+
+# Детерминированное моделирование НКА
+dfa, alphabet = nfa_to_dfa(nfa_dict)
+
+# Отрисовка полученного ДКА в Graphviz
+def construct_dfa_graph(dfa):
+    G = pgv.AGraph(strict=False, directed=True)
+
+    for state in dfa:
+        for symbol in dfa[state]:
+            target_state = dfa[state][symbol]
+            G.add_edge(str(state), str(target_state), label=symbol)
+
+    return G
+
+dfa_graph = construct_dfa_graph(dfa)
+dfa_graph.layout(prog='dot')
+dfa_graph.draw('dfa.png')
