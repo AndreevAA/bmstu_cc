@@ -40,6 +40,7 @@ def identify_terminals_nonterminals(grammar):
 
 def convert_to_equations(grammar):
     equations = []
+
     nonterminals = set()
 
     for rule in grammar:
@@ -65,6 +66,10 @@ def convert_to_equations(grammar):
     for eq in equations:
         coeff = [1 if x in eq else 0 for x in nonterminals]
         system.append(coeff)
+
+    print()
+    print("Equations")
+    print(equations)
 
     return system, list(nonterminals)
 
