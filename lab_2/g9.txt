@@ -1,0 +1,7 @@
+A = B
+A = a
+B = C
+B = b
+C = D
+C = D
+C = c

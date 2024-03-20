@@ -1,0 +1,7 @@
+S = A S
+S = B S
+S = s
+E = E F
+E = F F
+A = a
+F = f
