@@ -154,9 +154,6 @@ nfa = construct_nfa(regex_solution)
 nfa.layout(prog='dot')
 nfa.draw('nfa.png')
 
-import numpy as np
-import pygraphviz as pgv
-
 def epsilon_closure(nfa, states):
     epsilon_states = set(states)
     stack = list(epsilon_states)
