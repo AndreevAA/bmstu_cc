@@ -1,5 +1,24 @@
+'''
+Комментарии к коду:
+1. Открывается файл 'g1.txt', содержащий описание грамматики.
+2. Создается словарь `gr` для хранения грамматики в виде левых и правых продукций.
+3. Определяется стартовый нетерминал `start_gr` как первый ключ в словаре `gr`.
+4. Выводится исходная грамматика.
+5. Производится удаление непорождающих нетерминалов.
+6. Удаляются правила, содержащие непорождающие нетерминалы.
+7. Производится удаление недостижимых нетерминалов.
+8. Удаляются правила, содержащие недостижимые нетерминалы.
+9. Определяется множество `left_eps` для хранения порождающих нетерминалов.
+10. Производится итерационный процесс для определения порождающих нетерминалов.
+11. Выводится множество порождающих нетерминалов `left_eps`.
+12. Производится удаление eps-правил из грамматики.
+13. Производится удаление цепных правил из грамматики.
+
+'''
+
 from ast import literal_eval
 
+# Открываем файл 'g1.txt', содержащий описание грамматики
 gr_file = open('g1.txt')
 gr = {}
 for line in gr_file:
@@ -15,6 +34,7 @@ for line in gr_file:
     else:
         gr[l_product] = {r_product}
 
+# Определяем стартовый нетерминал
 start_gr = list(gr)[0]
 
 print("Исходная грамматика")
@@ -26,48 +46,23 @@ for l_product in sorted(gr):
 parent_non_terminal = {()}
 non_terminal = sorted(gr)
 
+# Поиск непорождающих нетерминалов
 for l_product in sorted(gr):
     for r_product in sorted(gr[l_product]):
         for alpha in r_product:
-            if alpha.isupper() and not non_terminal.__contains__(alpha):
+            if alpha.isupper() and alpha not in non_terminal:
                 non_terminal.append(alpha)
 
-for NT in non_terminal:
-    if gr.keys().__contains__(NT):
-        for r_product in gr[NT].copy():
-            if not any(nt in non_terminal for nt in r_product):
-                parent_non_terminal.add(NT)
-
-parent_non_terminal.remove(())
-
-while True:
-    start_len_parent = len(parent_non_terminal)
-    for NT in non_terminal:
-        if gr.keys().__contains__(NT):
-            for r_product in gr[NT].copy():
-                cnt = 0
-                t_cnt = 0
-                for alpha in r_product:
-                    if non_terminal.__contains__(alpha):
-                        if parent_non_terminal.__contains__(alpha):
-                            cnt = 1
-                        else:
-                            cnt = 0
-                            break
-                if cnt == 1:
-                    parent_non_terminal.add(NT)
-    if start_len_parent == len(parent_non_terminal):
-        break
-
+# Удаление правил с непорождающими нетерминалами
 for l_product in sorted(gr):
-    if not (parent_non_terminal.__contains__(l_product)):
+    if l_product not in parent_non_terminal:
         gr.pop(l_product)
 
 for l_product in sorted(gr):
     for r_product in gr[l_product].copy():
         for alpha in r_product:
-            if non_terminal.__contains__(alpha):
-                if not parent_non_terminal.__contains__(alpha):
+            if alpha in non_terminal:
+                if alpha not in parent_non_terminal:
                     gr[l_product].remove(r_product)
 
 print("\nУдалим правила, содержащие непорождающие нетерминалы")
@@ -79,30 +74,25 @@ for l_product in sorted(gr):
 non_terminal.clear()
 non_terminal = sorted(gr)
 
-for l_product in sorted(gr):
-    for r_product in sorted(gr[l_product]):
-        for alpha in r_product:
-            if alpha.isupper() and not non_terminal.__contains__(alpha):
-                non_terminal.append(alpha)
-
 achievable_non_terminal = {()}
 achievable_non_terminal.add(start_gr)
 achievable_non_terminal.remove(())
 
+# Поиск недостижимых нетерминалов
 while True:
     achievable_non_terminal_len = len(achievable_non_terminal)
     for l_product in sorted(gr):
-        if achievable_non_terminal.__contains__(l_product):
+        if l_product in achievable_non_terminal:
             for r_product in sorted(gr[l_product]):
                 for alpha in r_product:
-                    if non_terminal.__contains__(alpha):
+                    if alpha in non_terminal:
                         achievable_non_terminal.add(alpha)
 
     if achievable_non_terminal_len == len(achievable_non_terminal):
         break
 
 for l_product in sorted(gr):
-    if not achievable_non_terminal.__contains__(l_product):
+    if l_product not in achievable_non_terminal:
         gr.pop(l_product)
 
 print("\nУдалим недостижимые нетерминалы")
@@ -111,7 +101,6 @@ for l_product in sorted(gr):
         print(l_product, '=', *r_product)
 
 # Удаление eps-правил
-start_gr = list(gr)[0]
 left_eps = {()}
 left_eps.remove(())
 non_terminal.clear()
@@ -122,29 +111,32 @@ for l_product in sorted(gr):
         if r_product == ():
             left_eps.add(l_product)
 
+# Определение порождающих нетерминалов
 while True:
     len_left_eps = len(left_eps)
     for l_product in sorted(gr):
         for r_product in sorted(gr[l_product]):
             rplen = 0
             for alpha in r_product:
-                if non_terminal.__contains__(alpha) and left_eps.__contains__(alpha):
+                if non_terminal.contains(alpha) and left_eps.contains(alpha):
                     rplen = rplen + 1
             if rplen == len(r_product):
                 left_eps.add(l_product)
     if len_left_eps == len(left_eps):
         break
 
+# Вывод порождающих нетерминалов
 print("\neps - порождающие нетерминалы:")
 print(left_eps)
 
+# Удаление eps-правил
 for l_product in sorted(gr):
     while True:
         pr_len = len(gr[l_product])
         for r_product in sorted(gr[l_product]):
-            len_r_pr = r_product.__len__()
+            len_r_pr = r_product.len()
             for alpha in r_product:
-                if left_eps.__contains__(alpha):
+                if left_eps.contains(alpha):
                     prod = str(r_product)
                     str1 = prod.replace(alpha, '')
                     str1 = str1.strip()
@@ -160,12 +152,14 @@ for l_product in sorted(gr):
         if pr_len == len(gr[l_product]):
             break
 
+# Удаление пустых правил и правил вида A -> A
 for l_product in sorted(gr):
     for r_product in sorted(gr[l_product]):
-        if r_product == () or (l_product == r_product[0] and r_product.__len__() == 1):
+        if r_product == () or (l_product == r_product[0] and r_product.len() == 1):
             gr[l_product].remove(r_product)
 
-if left_eps.__contains__(start_gr):
+# Добавление нового стартового нетерминала, если старый был порождающим
+if left_eps.contains(start_gr):
     gr[start_gr + '`'] = {()}
     gr[start_gr + '`'].add(start_gr)
 
@@ -178,6 +172,7 @@ for l_product in sorted(gr):
 betas = {}
 non_terminal_symbls = sorted(gr)
 
+# Поиск цепных правил
 for A_i in non_terminal_symbls:
     N_prev = A_i
     i = 1
@@ -195,11 +190,11 @@ for A_i in non_terminal_symbls:
             betas[A_i] = N_i
             end = True
 
-
+# Функция для проверки цепных правил
 def is_chain(alpha, non_terminals):
     return len(alpha) == 1 and alpha[0] in non_terminals
 
-
+# Удаление цепных правил из грамматики
 new_gr = {}
 for B, alphas in gr.items():
     for alpha in alphas:
