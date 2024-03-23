@@ -1,0 +1,11 @@
+S = A a B
+S = a B
+S = c C
+A = A B
+A = a
+A = b
+A = B
+B = B a
+B =
+C = A B
+C = c
