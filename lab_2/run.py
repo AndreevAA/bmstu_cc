@@ -1,4 +1,22 @@
+<<<<<<< HEAD
 gr_file = open('g1.txt')
+=======
+'''
+Комментарии к коду:
+1. Открывается файл 'gi.txt', содержащий описание грамматики.
+2. Создается пустой словарь `gr` для хранения грамматики в виде левых и правых продукций.
+3. Каждая строка из файла обрабатывается, удаляются лишние пробелы.
+4. Левая и правая части продукции разделяются по символу '='.
+5. Левая и правая части продукции очищаются от лишних пробелов и преобразуются в кортеж.
+6. Проверяется, существует ли уже левая часть продукции в словаре `gr`, и добавляется правая часть.
+7. Выводится исходная грамматика.
+8. Производится преобразование грамматики путем удаления левой рекурсии и добавления новых продукций.
+9. Выводится преобразованная грамматика.
+'''
+
+# Открываем файл 'g1.txt', содержащий описание грамматики
+gr_file = open('g3.txt')
+>>>>>>> 68258bdf18b756c5e37cc0a2808d4d9438320935
 gr = {}
 for line in gr_file:
     line = line.strip()
@@ -18,6 +36,17 @@ for l_product in gr:
     for r_product in gr[l_product]:
         print(l_product, '=', *r_product)
 
+<<<<<<< HEAD
+=======
+def print_new_grammer(gr):
+    # Вывод преобразованной грамматики
+    print("Преобразованная грамматика")
+    for l_product in sorted(gr):
+        for r_product in gr[l_product]:
+            print(l_product, '=', *r_product)
+
+# Преобразование грамматики
+>>>>>>> 68258bdf18b756c5e37cc0a2808d4d9438320935
 non_terminal = sorted(gr)
 for A_i in non_terminal:
     for A_j in non_terminal:
@@ -30,6 +59,9 @@ for A_i in non_terminal:
             gr[A_i].remove((A_j,) + gamma)
             for sigma in gr[A_j]:
                 gr[A_i].add(sigma + gamma)
+            print_new_grammer(gr)
+
+    print_new_grammer(gr)
 
     gr[A_i + '`'] = {()}
     for alpha_i in gr[A_i].copy():
@@ -38,6 +70,8 @@ for A_i in non_terminal:
             gr[A_i + '`'].add(alpha_i[1:] + (A_i + '`',))
         else:
             gr[A_i].add(alpha_i + (A_i + '`',))
+    
+    print_new_grammer(gr)
 
 print("Преобразованная грамматика")
 for l_product in sorted(gr):
