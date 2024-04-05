@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-gr_file = open('g1.txt')
-=======
 '''
 Комментарии к коду:
 1. Открывается файл 'gi.txt', содержащий описание грамматики.
@@ -16,8 +13,9 @@ gr_file = open('g1.txt')
 
 # Открываем файл 'g1.txt', содержащий описание грамматики
 gr_file = open('g3.txt')
->>>>>>> 68258bdf18b756c5e37cc0a2808d4d9438320935
 gr = {}
+
+# Чтение и обработка строк файла для создания грамматики
 for line in gr_file:
     line = line.strip()
     if not line:
@@ -31,13 +29,13 @@ for line in gr_file:
     else:
         gr[l_product] = {r_product}
 
+# Вывод исходной грамматики
 print("Исходная грамматика")
 for l_product in gr:
     for r_product in gr[l_product]:
         print(l_product, '=', *r_product)
 
-<<<<<<< HEAD
-=======
+
 def print_new_grammer(gr):
     # Вывод преобразованной грамматики
     print("Преобразованная грамматика")
@@ -45,8 +43,8 @@ def print_new_grammer(gr):
         for r_product in gr[l_product]:
             print(l_product, '=', *r_product)
 
+
 # Преобразование грамматики
->>>>>>> 68258bdf18b756c5e37cc0a2808d4d9438320935
 non_terminal = sorted(gr)
 for A_i in non_terminal:
     for A_j in non_terminal:
@@ -67,12 +65,13 @@ for A_i in non_terminal:
     for alpha_i in gr[A_i].copy():
         gr[A_i].remove(alpha_i)
         if alpha_i and alpha_i[0] == A_i:
-            gr[A_i + '`'].add(alpha_i[1:] + (A_i + '`',))
+            gr[A_i + ''].add(alpha_i[1:] + (A_i + '',))
         else:
             gr[A_i].add(alpha_i + (A_i + '`',))
-    
+
     print_new_grammer(gr)
 
+# Вывод преобразованной грамматики
 print("Преобразованная грамматика")
 for l_product in sorted(gr):
     for r_product in gr[l_product]:
