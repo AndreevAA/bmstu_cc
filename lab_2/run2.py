@@ -1,217 +1,194 @@
 from ast import literal_eval
 
-gr_file = open('g1.txt')
-gr = {}
-for line in gr_file:
-    line = line.strip()
-    if not line:
-        continue
-    l_product, r_product = line.split('=')
-    l_product = l_product.strip()
-    r_product = r_product.strip()
-    r_product = tuple(r_product.split())
-    if l_product in gr:
-        gr[l_product].add(r_product)
-    else:
-        gr[l_product] = {r_product}
+grammar_filename = 'g1.txt'
 
-start_gr = list(gr)[0]
+
+class Grammar:
+
+    def __init__(self, grammar_filename):
+        self.start_grammar, self.grammar = {}, {}
+
+        if self.__upload_from_the_file(grammar_filename) == 0:
+            self.set_grammar_to_start_grammar()
+            print("Success: grammar file upload")
+        else:
+            print("Error: grammar file upload")
+
+    def set_grammar_to_start_grammar(self):
+        self.grammar = self.start_grammar
+
+    # Uploading grammar from the file
+    def __upload_from_the_file(self, grammar_filename):
+        grammar_filename = open(grammar_filename)
+
+        try:
+            for _ in grammar_filename:
+                left_term, right_term = (_.strip()).split('=')
+                left_term, right_term = left_term.strip(), right_term.strip()
+
+                if left_term in self.start_grammar:
+                    self.start_grammar[left_term].add(right_term)
+                else:
+                    self.start_grammar[left_term] = {right_term}
+            return 0
+        except Exception:
+            return -1
+
+    # Output grammar
+    def output_grammar(self):
+        for left_term in sorted(self.grammar):
+            for right_term in sorted(self.grammar[left_term]):
+                print(left_term, '=', *right_term)
+
+    # Is term non-terminal
+    def __is_non_terminal(self, terminal):
+        if terminal.isupper():
+            return True
+        return False
+
+    # Finding non-terminals in the right terms
+    def __get_non_terminals(self):
+        non_terminals = sorted(self.grammar)
+
+        for left_term in sorted(self.grammar):
+            for right_term in sorted(self.grammar[left_term]):
+                for alfa in right_term:
+
+                    # Alfa non terminal (uppercase)
+                    if self.__is_non_terminal(alfa):
+                        if not non_terminals.__contains__(alfa):
+                            non_terminals.append(alfa)
+
+        return non_terminals
+
+    # Finding all parent non-terminals
+    def __get_parent_non_terminals(self, non_terminals):
+        parent_non_terminals = {()}
+
+        # parent_non_terminals from left side terminals
+        for tmp_non_terminal in non_terminals:
+            # Is tmp_non_terminal on the left side of grammar
+            if self.grammar.keys().__contains__(tmp_non_terminal):
+                # Right side by the key
+                tmp_value = self.grammar[tmp_non_terminal]
+
+                for right_term in tmp_value:
+                    # Not terminals of tmp_non_terminal with children on the right side
+                    if not any(tmp_nt in non_terminals for tmp_nt in right_term):
+                        parent_non_terminals.add(tmp_non_terminal)
+
+        # Removing initialized ()
+        parent_non_terminals.remove(())
+
+        # parent_non_terminals from right side terminals
+        start_parent_non_terminals_length = len(parent_non_terminals)
+
+        while True:
+            start_len_parent = len(parent_non_terminals)
+            for tmp_non_terminal in non_terminals:
+                if self.grammar.keys().__contains__(tmp_non_terminal):
+                    for r_product in self.grammar[tmp_non_terminal].copy():
+                        cnt = 0
+                        for alpha in r_product:
+                            if non_terminals.__contains__(alpha):
+                                if parent_non_terminals.__contains__(alpha):
+                                    cnt = 1
+                                else:
+                                    cnt = 0
+                                    break
+                        if cnt == 1:
+                            parent_non_terminals.add(tmp_non_terminal)
+            if start_len_parent == len(parent_non_terminals):
+                break
+
+        return parent_non_terminals
+
+    # Do right term contains only parent non-terminals
+    def __right_term_contains_only_parent_non_terminals(self, non_terminals, parent_non_terminals, right_term):
+        state = False
+
+        for alfa in right_term:
+            if non_terminals.__contains__(alfa):
+                if parent_non_terminals.__contains__(alfa):
+                    state = True
+                else:
+                    return False
+
+        return state
+
+    # Deleting parent non terminal
+    def delete_parent_non_terminal(self):
+
+        # Getting all non-terminals
+        non_terminals = self.__get_non_terminals()
+
+        # Getting all parent non terminals
+        parent_non_terminals = self.__get_parent_non_terminals(non_terminals)
+
+        # Deleting l_terms
+        for left_term in sorted(self.grammar):
+            if not (parent_non_terminals.__contains__(left_term)):
+                self.grammar.pop(left_term)
+
+        # Deleting r_terms
+        for left_term in sorted(self.grammar):
+            tmp_value = self.grammar[left_term].copy()
+
+            for right_term in tmp_value:
+                for alpha in right_term:
+                    if non_terminals.__contains__(alpha):
+                        if not parent_non_terminals.__contains__(alpha):
+                            self.grammar[left_term].remove(right_term)
+
+    # Getting all unreachable_non_terminals
+    def __get_unreachable_non_terminals(self, non_terminals):
+        unreachable_non_terminals = {()}
+        unreachable_non_terminals.add(list(self.grammar)[0])
+        unreachable_non_terminals.remove(())
+
+        while True:
+            unreachable_non_terminals_len = len(unreachable_non_terminals)
+            for l_product in sorted(self.grammar):
+                if unreachable_non_terminals.__contains__(l_product):
+                    for r_product in sorted(self.grammar[l_product]):
+                        for alpha in r_product:
+                            if non_terminals.__contains__(alpha):
+                                unreachable_non_terminals.add(alpha)
+
+            if unreachable_non_terminals_len == len(unreachable_non_terminals):
+                break
+
+        return unreachable_non_terminals
+
+    # Deleting unreachable non-terminals
+    def delete_unreachable_non_terminals(self):
+
+        # Getting all non-terminals
+        non_terminals = self.__get_non_terminals()
+
+        # Getting all unreachable_non_terminals
+        unreachable_non_terminals = self.__get_unreachable_non_terminals(non_terminals)
+
+        # Deleting unreachable
+        for left_term in sorted(self.grammar):
+            if not unreachable_non_terminals.__contains__(left_term):
+                self.grammar.pop(left_term)
+
+
+grammar = Grammar(grammar_filename)
 
 print("Исходная грамматика")
-for l_product in sorted(gr):
-    for r_product in sorted(gr[l_product]):
-        print(l_product, '=', *r_product)
+grammar.output_grammar()
 
-# Удаление непорождающих нетерминалов
-parent_non_terminal = {()}
-non_terminal = sorted(gr)
+print("Удаление непорождающих грамматика")
+grammar.set_grammar_to_start_grammar()
+grammar.delete_parent_non_terminal()
+grammar.output_grammar()
 
-for l_product in sorted(gr):
-    for r_product in sorted(gr[l_product]):
-        for alpha in r_product:
-            if alpha.isupper() and not non_terminal.__contains__(alpha):
-                non_terminal.append(alpha)
-
-for NT in non_terminal:
-    if gr.keys().__contains__(NT):
-        for r_product in gr[NT].copy():
-            if not any(nt in non_terminal for nt in r_product):
-                parent_non_terminal.add(NT)
-
-parent_non_terminal.remove(())
-
-while True:
-    start_len_parent = len(parent_non_terminal)
-    for NT in non_terminal:
-        if gr.keys().__contains__(NT):
-            for r_product in gr[NT].copy():
-                cnt = 0
-                t_cnt = 0
-                for alpha in r_product:
-                    if non_terminal.__contains__(alpha):
-                        if parent_non_terminal.__contains__(alpha):
-                            cnt = 1
-                        else:
-                            cnt = 0
-                            break
-                if cnt == 1:
-                    parent_non_terminal.add(NT)
-    if start_len_parent == len(parent_non_terminal):
-        break
-
-for l_product in sorted(gr):
-    if not (parent_non_terminal.__contains__(l_product)):
-        gr.pop(l_product)
-
-for l_product in sorted(gr):
-    for r_product in gr[l_product].copy():
-        for alpha in r_product:
-            if non_terminal.__contains__(alpha):
-                if not parent_non_terminal.__contains__(alpha):
-                    gr[l_product].remove(r_product)
-
-print("\nУдалим правила, содержащие непорождающие нетерминалы")
-for l_product in sorted(gr):
-    for r_product in sorted(gr[l_product]):
-        print(l_product, '=', *r_product)
-
-# Удаление недостижимых нетерминалов
-non_terminal.clear()
-non_terminal = sorted(gr)
-
-for l_product in sorted(gr):
-    for r_product in sorted(gr[l_product]):
-        for alpha in r_product:
-            if alpha.isupper() and not non_terminal.__contains__(alpha):
-                non_terminal.append(alpha)
-
-achievable_non_terminal = {()}
-achievable_non_terminal.add(start_gr)
-achievable_non_terminal.remove(())
-
-while True:
-    achievable_non_terminal_len = len(achievable_non_terminal)
-    for l_product in sorted(gr):
-        if achievable_non_terminal.__contains__(l_product):
-            for r_product in sorted(gr[l_product]):
-                for alpha in r_product:
-                    if non_terminal.__contains__(alpha):
-                        achievable_non_terminal.add(alpha)
-
-    if achievable_non_terminal_len == len(achievable_non_terminal):
-        break
-
-for l_product in sorted(gr):
-    if not achievable_non_terminal.__contains__(l_product):
-        gr.pop(l_product)
-
-print("\nУдалим недостижимые нетерминалы")
-for l_product in sorted(gr):
-    for r_product in sorted(gr[l_product]):
-        print(l_product, '=', *r_product)
-
-# Удаление eps-правил
-start_gr = list(gr)[0]
-left_eps = {()}
-left_eps.remove(())
-non_terminal.clear()
-non_terminal = sorted(gr)
-
-for l_product in sorted(gr):
-    for r_product in sorted(gr[l_product]):
-        if r_product == ():
-            left_eps.add(l_product)
-
-while True:
-    len_left_eps = len(left_eps)
-    for l_product in sorted(gr):
-        for r_product in sorted(gr[l_product]):
-            rplen = 0
-            for alpha in r_product:
-                if non_terminal.__contains__(alpha) and left_eps.__contains__(alpha):
-                    rplen = rplen + 1
-            if rplen == len(r_product):
-                left_eps.add(l_product)
-    if len_left_eps == len(left_eps):
-        break
-
-print("\neps - порождающие нетерминалы:")
-print(left_eps)
-
-for l_product in sorted(gr):
-    while True:
-        pr_len = len(gr[l_product])
-        for r_product in sorted(gr[l_product]):
-            len_r_pr = r_product.__len__()
-            for alpha in r_product:
-                if left_eps.__contains__(alpha):
-                    prod = str(r_product)
-                    str1 = prod.replace(alpha, '')
-                    str1 = str1.strip()
-                    indx = 0
-                    python_dict = literal_eval(str1)
-                    as_list = list(python_dict)
-                    for c in as_list:
-                        if c == '':
-                            del as_list[indx]
-                        indx = indx + 1
-                    python_dict = tuple(as_list)
-                    gr[l_product].add(python_dict)
-        if pr_len == len(gr[l_product]):
-            break
-
-for l_product in sorted(gr):
-    for r_product in sorted(gr[l_product]):
-        if r_product == () or (l_product == r_product[0] and r_product.__len__() == 1):
-            gr[l_product].remove(r_product)
-
-if left_eps.__contains__(start_gr):
-    gr[start_gr + '`'] = {()}
-    gr[start_gr + '`'].add(start_gr)
-
-print("\nУдалим eps-правила")
-for l_product in sorted(gr):
-    for r_product in (gr[l_product]):
-        print(l_product, '=', *r_product)
-
-# Удаление цепных правил
-betas = {}
-non_terminal_symbls = sorted(gr)
-
-for A_i in non_terminal_symbls:
-    N_prev = A_i
-    i = 1
-    end = False
-    while not end:
-        N_i = set().union(N_prev)
-        for B in N_prev:
-            for C in gr[B]:
-                if len(C) == 1 and C[0] in non_terminal_symbls:
-                    N_i.add(C[0])
-        if N_i != N_prev:
-            N_prev = N_i
-            i += 1
-        else:
-            betas[A_i] = N_i
-            end = True
+print("Удаление недостижимых нетерминалов")
+grammar.set_grammar_to_start_grammar()
+grammar.delete_unreachable_non_terminals()
+grammar.output_grammar()
 
 
-def is_chain(alpha, non_terminals):
-    return len(alpha) == 1 and alpha[0] in non_terminals
 
-
-new_gr = {}
-for B, alphas in gr.items():
-    for alpha in alphas:
-        if not is_chain(alpha, non_terminal_symbls):
-            for A, Bs in betas.items():
-                if B in Bs:
-                    if A in new_gr:
-                        new_gr[A].add(alpha)
-                    else:
-                        new_gr[A] = {alpha}
-
-print("\nУдалим цепные правила")
-for l_product in sorted(new_gr):
-    for r_product in new_gr[l_product]:
-        print(l_product, '=', *r_product)
