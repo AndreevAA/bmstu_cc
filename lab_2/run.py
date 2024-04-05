@@ -12,7 +12,7 @@
 '''
 
 # Открываем файл 'g1.txt', содержащий описание грамматики
-gr_file = open('g1.txt')
+gr_file = open('g3.txt')
 gr = {}
 
 # Чтение и обработка строк файла для создания грамматики
@@ -35,6 +35,13 @@ for l_product in gr:
     for r_product in gr[l_product]:
         print(l_product, '=', *r_product)
 
+def print_new_grammer(gr):
+    # Вывод преобразованной грамматики
+    print("Преобразованная грамматика")
+    for l_product in sorted(gr):
+        for r_product in gr[l_product]:
+            print(l_product, '=', *r_product)
+
 # Преобразование грамматики
 non_terminal = sorted(gr)
 for A_i in non_terminal:
@@ -48,6 +55,9 @@ for A_i in non_terminal:
             gr[A_i].remove((A_j,) + gamma)
             for sigma in gr[A_j]:
                 gr[A_i].add(sigma + gamma)
+            print_new_grammer(gr)
+
+    print_new_grammer(gr)
 
     gr[A_i + '`'] = {()}
     for alpha_i in gr[A_i].copy():
@@ -56,6 +66,8 @@ for A_i in non_terminal:
             gr[A_i + ''].add(alpha_i[1:] + (A_i + '',))
         else:
             gr[A_i].add(alpha_i + (A_i + '`',))
+    
+    print_new_grammer(gr)
 
 # Вывод преобразованной грамматики
 print("Преобразованная грамматика")

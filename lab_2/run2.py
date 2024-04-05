@@ -1,6 +1,6 @@
 from ast import literal_eval
 
-gr_file = open('g1.txt')
+gr_file = open('g10.txt')
 gr = {}
 for line in gr_file:
     line = line.strip()
@@ -185,9 +185,12 @@ for A_i in non_terminal_symbls:
     while not end:
         N_i = set().union(N_prev)
         for B in N_prev:
-            for C in gr[B]:
-                if len(C) == 1 and C[0] in non_terminal_symbls:
-                    N_i.add(C[0])
+            try:
+                for C in gr[B]:
+                    if len(C) == 1 and C[0] in non_terminal_symbls:
+                        N_i.add(C[0])
+            except:
+                pass
         if N_i != N_prev:
             N_prev = N_i
             i += 1
