@@ -21,7 +21,7 @@ class Parser:
             return self.input[self.i]
         return None
 
-    
+
     def block(self):
         if self.get_current_token() == '{':
             self.i = self.i + 1
@@ -62,3 +62,16 @@ class Parser:
             return True
         else:
             return self.error()
+
+    def primary(self):
+        if self.get_current_token() == 'p' or self.get_current_token().isdigit():
+            self.i = self.i + 1
+            return True
+        if self.get_current_token() == '(':
+            self.i = self.i + 1
+            if self.expression():
+                print('expression')
+                if self.get_current_token() == ')':
+                    self.i = self.i + 1
+                    return True
+        self.error()
