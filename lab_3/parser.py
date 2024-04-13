@@ -128,3 +128,31 @@ class Parser:
             else:
                 break
         return True
+
+    def expression(self):
+        if self.relation():
+            print('relation')
+            if self.get_current_token() in ('and', 'or', 'xor'):
+                self.i = self.i + 1
+                print('logic operation')
+                if self.relation():
+                    print('relation')
+                    return True
+                self.error()
+            return True
+        else:
+            self.error()
+
+    def relation(self):
+        if self.simple_expression():
+            print('simple expression')
+            if self.get_current_token() in ('<', '<=', '==', '/>', '>=', '>'):
+                self.i = self.i + 1
+                print('relation operation')
+                if self.simple_expression():
+                    print('simple expression')
+                    return True
+                self.error()
+            return True
+        else:
+            self.error()
