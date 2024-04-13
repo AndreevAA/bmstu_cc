@@ -75,3 +75,24 @@ class Parser:
                     self.i = self.i + 1
                     return True
         self.error()
+
+    def factor(self):
+        if self.get_current_token() in ('abs', 'not'):
+            self.i = self.i + 1
+            if self.primary():
+                print('primary')
+                return True
+            self.error()
+        if self.primary():
+            print('primary')
+            while True:
+                if self.get_current_token() == '**':
+                    self.i = self.i + 1
+                    if self.primary():
+                        print('primary')
+                        continue
+                    self.error()
+                else:
+                    break
+        return True
+
