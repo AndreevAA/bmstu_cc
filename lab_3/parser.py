@@ -96,3 +96,18 @@ class Parser:
                     break
         return True
 
+    def term(self):
+        if self.factor():
+            print('factor')
+            while True:
+                if self.get_current_token() in ('*', '/', 'mod', 'rem'):
+                    print('mul operation')
+                    self.i = self.i + 1
+                    if self.factor():
+                        print('factor')
+                        continue
+                    self.error()
+                else:
+                    break
+            return True
+
