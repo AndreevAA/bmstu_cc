@@ -111,3 +111,20 @@ class Parser:
                     break
             return True
 
+    def simple_expression(self):
+        if self.get_current_token() in ('-', '+'):
+            self.i = self.i + 1
+            print('un add operation')
+        if self.term():
+            print('term')
+        while True:
+            if self.get_current_token() in ('+', '-', '&'):
+                self.i = self.i + 1
+                print('bin add operation')
+                if self.term():
+                    print('term')
+                    continue
+                self.error()
+            else:
+                break
+        return True
