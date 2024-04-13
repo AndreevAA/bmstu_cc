@@ -156,3 +156,15 @@ class Parser:
             return True
         else:
             self.error()
+
+    def tail(self):
+        if self.get_current_token() == ';':
+            self.i = self.i + 1
+            if self.operator():
+                print('operator')
+                if self.tail():
+                    print('tail')
+                    return True
+                self.error()
+            self.error()
+        return True
