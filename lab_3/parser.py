@@ -20,3 +20,45 @@ class Parser:
         if self.i < len(self.input):
             return self.input[self.i]
         return None
+
+    
+    def block(self):
+        if self.get_current_token() == '{':
+            self.i = self.i + 1
+            if self.get_current_token() == '}':
+                print('block')
+                return True
+            elif self.operators_list():
+                print('operator_list')
+                if self.get_current_token() == '}':
+                    self.i = self.i + 1
+                    print('block')
+                    return True
+                else:
+                    self.error()
+            self.error()
+
+    def operators_list(self):
+        if self.operator():
+            print('operator')
+            if self.tail():
+                print('tail')
+                return True
+            self.error()
+        self.error()
+
+    def operator(self):
+        if self.get_current_token().isalpha():
+            self.i = self.i + 1
+            print('identifier')
+            if self.get_current_token() == ':=':
+                self.i = self.i + 1
+                if self.expression():
+                    print('expression')
+                    return True
+                self.error()
+            self.error()
+        elif self.block():
+            return True
+        else:
+            return self.error()
