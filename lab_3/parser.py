@@ -1,27 +1,19 @@
 class Parser:
 
     def __init__(self, input):
-        self.input = input
-        self.i = 0
-        self.program()
-
+        self.input = input; self.i = 0; self.program()
     def program(self):
         if self.block():
             print('program')
             return True
         else:
             return False
-
     def error(self):
-        print('Syntax error on ', self.i)
-        exit()
-
+        print('Syntax error on ', self.i); exit()
     def get_current_token(self):
         if self.i < len(self.input):
             return self.input[self.i]
         return None
-
-
     def block(self):
         if self.get_current_token() == '{':
             self.i = self.i + 1
@@ -37,7 +29,6 @@ class Parser:
                 else:
                     self.error()
             self.error()
-
     def operators_list(self):
         if self.operator():
             print('operator')
@@ -46,15 +37,12 @@ class Parser:
                 return True
             self.error()
         self.error()
-
     def operator(self):
         if self.get_current_token().isalpha():
             self.i = self.i + 1
-            print('identifier')
             if self.get_current_token() == ':=':
                 self.i = self.i + 1
-                if self.expression():
-                    print('expression')
+                if self.expression():  
                     return True
                 self.error()
             self.error()
@@ -62,7 +50,6 @@ class Parser:
             return True
         else:
             return self.error()
-
     def primary(self):
         if self.get_current_token() == 'p' or self.get_current_token().isdigit():
             self.i = self.i + 1
@@ -75,7 +62,6 @@ class Parser:
                     self.i = self.i + 1
                     return True
         self.error()
-
     def factor(self):
         if self.get_current_token() in ('abs', 'not'):
             self.i = self.i + 1
@@ -95,7 +81,6 @@ class Parser:
                 else:
                     break
         return True
-
     def term(self):
         if self.factor():
             print('factor')
@@ -110,7 +95,6 @@ class Parser:
                 else:
                     break
             return True
-
     def simple_expression(self):
         if self.get_current_token() in ('-', '+'):
             self.i = self.i + 1
@@ -128,7 +112,6 @@ class Parser:
             else:
                 break
         return True
-
     def expression(self):
         if self.relation():
             print('relation')
@@ -142,7 +125,6 @@ class Parser:
             return True
         else:
             self.error()
-
     def relation(self):
         if self.simple_expression():
             print('simple expression')
@@ -156,7 +138,6 @@ class Parser:
             return True
         else:
             self.error()
-
     def tail(self):
         if self.get_current_token() == ';':
             self.i = self.i + 1

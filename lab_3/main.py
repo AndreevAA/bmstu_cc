@@ -1,12 +1,13 @@
-from parser import Parser
+# from parser import Parser
+from vizual import M
 
 tests = [
-    '{ a := 3 ; aaa := p ; { a := p ; x := p and not p } }', 
-    '{ a := ( abs p and ( 1 ** 25 ) ) }', 
+    '{ a := 3 ; aaa := p ; { a := p ; x := p and not p } }' 
+    # '{ a := ( abs p and ( 1 ** 25 ) ) }', 
     # '{ a? := 1 and - ( + p and 1 ** 2 ** 455 ) }', 
-    '{ c := not ( p mod 5 / ( 2 + 2 ) ) }', 
-    '{ c := abs ( - p + 2 & 4 mod 5 / ( 2 ) ) }', 
-    '{ ll := ( p and - 22 ) }'
+    # '{ c := not ( p mod 5 / ( 2 + 2 ) ) }', 
+    # '{ c := abs ( - p + 2 & 4 mod 5 / ( 2 ) ) }', 
+    # '{ ll := ( p and - 22 ) }'
 ]
 
 def main(input_string):
@@ -14,7 +15,8 @@ def main(input_string):
     print()
     print('Tokens')
     print(input_string_split)
-    parser = Parser(input_string_split)
+    parser = M(input_string_split)
+    parser.render_tree()
 
 
 if __name__ == "__main__":
