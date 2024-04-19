@@ -2,10 +2,10 @@
 from vizual import M
 
 tests = [
-    '{ a := 3 ; aaa := p ; { a := p ; x := p and not p } }' 
+    #'{ a := 3 ; aaa := p ; { a := p ; x := p and not p } }' 
     # '{ a := ( abs p and ( 1 ** 25 ) ) }', 
     # '{ a? := 1 and - ( + p and 1 ** 2 ** 455 ) }', 
-    # '{ c := not ( p mod 5 / ( 2 + 2 ) ) }', 
+     '{ c := not ( p mod 5 / ( 2 + 2 ) ) }', 
     # '{ c := abs ( - p + 2 & 4 mod 5 / ( 2 ) ) }', 
     # '{ ll := ( p and - 22 ) }'
 ]
