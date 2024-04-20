@@ -1,5 +1,5 @@
 # from parser import Parser
-from vizual import M
+from vizual import Parser
 
 tests = [
     #'{ a := 3 ; aaa := p ; { a := p ; x := p and not p } }' 
@@ -15,7 +15,7 @@ def main(input_string):
     print()
     print('Tokens')
     print(input_string_split)
-    parser = M(input_string_split)
+    parser = Parser(input_string_split)
     parser.render_tree()
 
 
