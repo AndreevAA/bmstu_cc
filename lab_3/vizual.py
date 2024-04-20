@@ -39,11 +39,6 @@ class Parser:
             return True
         return False
 
-    def __error(self):
-        print()
-        print('ERROR: Syntax error on', self.i, "| elem =", self.input[self.i - 1])
-        exit()
-
     def __get_current_token(self):
         if self.i < len(self.input):
             return self.input[self.i]
@@ -64,46 +59,64 @@ class Parser:
                 if self.__get_current_token() == '}':
                     right_brack_node = self.__create_new_node(parent_id = block_node.id, id=self.__get_new_node_id(), value='}')
                     print("block", self.__get_current_token())
+                    self.i += 1
                     return True
                 else:
                     self.__error()
             self.__error()
 
+    def __error(self, msg=""):
+        print()
+        print('ERROR: Syntax error on', self.i, "| elem =", self.input[self.i - 1], "|", msg)
+        exit()
+
+    
     def __operators_list(self, parent_node):
-        __operators_list_node = self.__create_new_node(parent_id = parent_node.id, id=self.__get_new_node_id(), value='operators_list')
+        operators_list_node = self.__create_new_node(parent_id=parent_node.id, id=self.__get_new_node_id(), value='operators_list')
         
-        if self.__operator(__operators_list_node):
+        if self.__operator(operators_list_node):
             print("operator", self.__get_current_token())
+            
+            nextTok = self.__get_current_token()
 
-            if self.__tail(__operators_list_node):
-                print("tail", self.__get_current_token())
-                return True
+            print ("DET ", nextTok)
+            if nextTok != ';':
+                self.__error('Error in ;')
 
-            self.__error()
-        self.__error()
+            self.__create_new_node(parent_id=operators_list_node.id, id=self.__get_new_node_id(), value=';')
+            
+            self.i += 1
+            self.__operators_list(operators_list_node)
+        
+        return True
 
     def __operator(self, parent_node):
-        operator_node = self.__create_new_node(parent_id = parent_node.id, id=self.__get_new_node_id(), value='operator_node')
+        operator_node = self.__create_new_node(parent_id=parent_node.id, id=self.__get_new_node_id(), value='operator_node')
 
         if self.__get_current_token().isalpha():
-            operator_node_value = self.__create_new_node(parent_id = operator_node.id, id=self.__get_new_node_id(), value=self.__get_current_token())
+            operator_node_value = self.__create_new_node(parent_id=operator_node.id, id=self.__get_new_node_id(), value=self.__get_current_token())
             print("operator", self.__get_current_token())
             self.i += 1
 
             if self.__get_current_token() == ':=':
-                operator_node_value = self.__create_new_node(parent_id = operator_node.id, id=self.__get_new_node_id(), value=':=')
+                operator_node_value = self.__create_new_node(parent_id=operator_node.id, id=self.__get_new_node_id(), value=':=')
                 print("operator", self.__get_current_token())
                 self.i += 1
 
                 if self.__expression(operator_node):
                     return True
                 
-                self.__error()
-            self.__error()
+                self.__error('Error in expression')
+            
+            self.__error('Expected ":=" after identifier')
         elif self.__block(operator_node):
             return True
-        else:
-            return self.__error()
+        elif self.__get_current_token() != ";":
+            print(self.__get_current_token())
+            # self.__error('Invalid operator')
+
+        
+
 
     def __factor(self, parent_node):
         factor_node = self.__create_new_node(parent_id = parent_node.id, id=self.__get_new_node_id(), value='factor_node')
@@ -228,21 +241,6 @@ class Parser:
             return True
         else:
             self.__error()
-
-    def __tail(self, parent_node):
-        if self.__get_current_token() == ';':
-            tail_node = self.__create_new_node(parent_id = parent_node.id, id=self.__get_new_node_id(), value=';')    
-            self.i += 1
-
-            if self.__operator(parent_node):
-                print("operator", self.__get_current_token())
-                
-                if self.__tail(parent_node):
-                    print("tail", self.__get_current_token())
-                    return True
-                self.__error()
-            self.__error()
-        return True
 
     def render_tree(self):
         print(self.node_lst)
