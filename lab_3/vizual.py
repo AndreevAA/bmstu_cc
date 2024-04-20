@@ -40,8 +40,8 @@ class Parser:
         return False
 
     def __error(self):
-        self.render_tree()
-        print('Syntax error on ', self.i)
+        print()
+        print('ERROR: Syntax error on', self.i, "| elem =", self.input[self.i - 1])
         exit()
 
     def __get_current_token(self):
