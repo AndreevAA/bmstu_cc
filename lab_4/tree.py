@@ -1,5 +1,5 @@
 from graphviz import Digraph
-import html
+import html, os
 
 class Tree:
     """
@@ -81,4 +81,8 @@ class Tree:
         """
         Отображает дерево в формате PNG.
         """
-        self.tree.render(picture_name, format="png", view=False)
+        # Создаем папку "img", если ее еще нет
+        if not os.path.exists("img"):
+            os.makedirs("img")
+
+        self.tree.render(os.path.join("img", f"{picture_name}"), format="png", view=False)

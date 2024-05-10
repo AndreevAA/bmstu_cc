@@ -1,0 +1,53 @@
+digraph {
+	node [shape=plaintext]
+	root [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+          <tr>
+            <td colspan="3">Node: Expression</td>
+          </tr>
+          <tr>
+            <td colspan="3">Content: - x y </td>
+          </tr>
+        </table>>]
+	"root.0" [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+          <tr>
+            <td colspan="3">Node: Term</td>
+          </tr>
+          <tr>
+            <td colspan="3">Content: x </td>
+          </tr>
+        </table>>]
+	root -> "root.0"
+	"root.0.0" [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+              <TR>
+                <TD COLSPAN="3">Node: x</TD>
+              </TR>
+            </TABLE>>]
+	"root.0" -> "root.0.0"
+	"root.1" [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+              <TR>
+                <TD COLSPAN="3">Node: -</TD>
+              </TR>
+            </TABLE>>]
+	root -> "root.1"
+	"root.2" [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+          <tr>
+            <td colspan="3">Node: Simple Expression 2</td>
+          </tr>
+          <tr>
+            <td colspan="3">Content: y </td>
+          </tr>
+        </table>>]
+	root -> "root.2"
+	"root.2.0" [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+              <TR>
+                <TD COLSPAN="3">Node: y</TD>
+              </TR>
+            </TABLE>>]
+	"root.2" -> "root.2.0"
+}
