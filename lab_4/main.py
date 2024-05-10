@@ -22,10 +22,12 @@ def main():
         if play == 1:
             TestController("tests.json").start()
         elif play == 2:
-            code = input("Code: ")
+            # code = "-5+5+7**9 - abs(14 + 12) > 20"#input("Code: ")
+            code = "(a + b) * (c + d) - e"
             root_node = Parser().parse_expr((StaticAnalyzer(code)._tokens), 0)
             tree = Tree(root_node)
             tree.render(picture_name = "parse_tree")
+            print(" ".join(map(str, root_node.content)))
         else:
             exit()
 

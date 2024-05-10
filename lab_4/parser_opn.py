@@ -158,6 +158,8 @@ class Parser:
 	            self.make_parse_lexem('('),
 	            self.parse_expr,
 	            self.make_parse_lexem(')'),
+	           # actions=lambda a,b,c: b.content) ->
+	           # actions=lambda a,b,c: b.content)
 	        ], actions=lambda a,b,c: b.content),
 	        self.parse_id,
 	        self.parse_num,
@@ -173,15 +175,21 @@ class Parser:
 	        self.make_combine([
 	            self.make_parse_lexem('abs'),
 	            self.parse_first,
+	           # actions=lambda a, b: [a.name] + b.content) ->
+	           # actions=lambda a, b: [0] + b.content + [a.name])
 	        ], actions=lambda a, b: [0] + b.content + [a.name]),
 	        self.make_combine([
 	            self.make_parse_lexem('not'),
 	            self.parse_first,
+               # actions=lambda a, b: [a.name] + b.content ) ->
+	           # actions=lambda a, b: [0] + b.content + [a.name])
 	        ], actions=lambda a, b: [0] + b.content + [a.name]),
 	        self.make_combine([
 	            self.parse_first,
 	            self.make_parse_lexem('**'),
 	            self.parse_first
+	           # actions=lambda a, b, c: [b.name] + a.content + c.content) ->
+	           # actions=lambda a, b, c: a.content + c.content + [b.name])
 	        ], actions=lambda a, b, c: a.content + c.content + [b.name]),
 	        self.parse_first
 	    ])(lexems, startPos)
@@ -197,6 +205,8 @@ class Parser:
 	            self.parse_mnoz,
 	            self.parse_mult_op,
 	            self.parse_slag
+	            # actions=lambda a, b, c: [b.name] + a.content + c.content) ->
+	            # actions=lambda a, b, c: a.content + c.content + [b.name])
 	        ], actions=lambda a, b, c: a.content + c.content + [b.name]),
 	        self.parse_mnoz
 	    ])(lexems, startPos)
@@ -212,6 +222,8 @@ class Parser:
 	            self.parse_slag,
 	            self.parse_bin_op,
 	            self.parse_smpl_stmt2
+	            # actions=lambda a, b, c: [b.name] + a.content + c.content) ->
+	            # actions=lambda a, b, c:  a.content + c.content + [b.name])
 	        ], actions=lambda a, b, c:  a.content + c.content + [b.name]),
 	        self.parse_slag
 	    ])(lexems, startPos)
@@ -226,8 +238,14 @@ class Parser:
 	        [
 	            self.make_combine([
 	                self.parse_unar,
-	                self.parse_smpl_stmt2
-	            ], actions=lambda a, b: [0] + b.content + [a.name, 0]),
+                  	self.parse_slag,
+                  	self.parse_bin_op,
+                  	self.parse_smpl_stmt2
+	                # actions=lambda a, b: [a.name, 0] + b.content) ->
+	                # actions=lambda a, b: [0] + b.content + [a.name] ->
+	                # actions=lambda a, b, с, d: [0] + b.content + [a.name]  + d.content + [b.name]) ->
+	                # actions=lambda a, b, с, d: [0] + b.content + [a.name]  + d.content + [c.name])
+	            ], actions=lambda a, b, c, d: [0] + b.content + [a.name]  + d.content + [c.name]),
 	            self.parse_smpl_stmt2
 	        ]
 	    )(lexems, startPos)
@@ -244,6 +262,8 @@ class Parser:
 	                self.parse_smpl_stmt,
 	                self.parse_rel_op,
 	                self.parse_rel
+	               # actions=lambda a, b, c: [b.data] + a.attrs + c.attrs) ->
+	               # actions=lambda a, b, c: a.content + c.content + [b.name]
 	            ], actions=lambda a, b, c: a.content + c.content + [b.name]),
 	            self.parse_smpl_stmt
 	        ]
