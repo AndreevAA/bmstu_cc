@@ -3,15 +3,15 @@ import typing
 class Node:
 	name = ""
 	children: list[typing.Type["Node"]]
-	parent_id = -1
-	child_id = -1
 	content = None
 
-	def __init__(self, name = None, state_proxy = False) -> None:
+	def __init__(self, name = None, state_proxy = False, parent_id = -1, child_id = -1) -> None:
 		self.state_proxy = state_proxy
 		self.name = name
 		self.children = []
 		self.content = []
+		self.parent_id = parent_id
+		self.child_id = child_id
 		pass
 
 	def __is_chilren_exist(self):

@@ -65,7 +65,7 @@ class Tree:
         node_name = f"Node: {node.name}"
         node_content = "Content: "
         for item in node.content:
-            node_content += str(item)
+            node_content += str(item) + " "
 
         node_content_str = f'{node_content}' if node.content else ''
 
@@ -77,8 +77,8 @@ class Tree:
         self._add_child_nodes(node, parent_id, node_id)
 
 
-    def render(self):
+    def render(self, picture_name):
         """
         Отображает дерево в формате PNG.
         """
-        self.tree.render("parse_tree", format="png", view=True)
+        self.tree.render(picture_name, format="png", view=False)

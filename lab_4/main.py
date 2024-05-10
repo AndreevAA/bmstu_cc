@@ -2,7 +2,7 @@ import typing
 
 
 from test import TestController
-from parser import Parser
+from parser_opn import Parser
 from tree import Tree
 from analyzer import StaticAnalyzer
 

@@ -1,0 +1,281 @@
+digraph {
+	node [shape=plaintext]
+	root [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+          <tr>
+            <td colspan="3">Node: Expression</td>
+          </tr>
+          <tr>
+            <td colspan="3">Content: 0 5.0 5.0 7.0 9.0 ** 0 14.0 12.0 + abs - + + - 0 20.0 &gt; </td>
+          </tr>
+        </table>>]
+	"root.0" [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+          <tr>
+            <td colspan="3">Node: Simple Expression</td>
+          </tr>
+          <tr>
+            <td colspan="3">Content: 0 5.0 5.0 7.0 9.0 ** 0 14.0 12.0 + abs - + + - 0 </td>
+          </tr>
+        </table>>]
+	root -> "root.0"
+	"root.0.0" [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+              <TR>
+                <TD COLSPAN="3">Node: -</TD>
+              </TR>
+            </TABLE>>]
+	"root.0" -> "root.0.0"
+	"root.0.1" [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+          <tr>
+            <td colspan="3">Node: Simple Expression 2</td>
+          </tr>
+          <tr>
+            <td colspan="3">Content: 5.0 5.0 7.0 9.0 ** 0 14.0 12.0 + abs - + + </td>
+          </tr>
+        </table>>]
+	"root.0" -> "root.0.1"
+	"root.0.1.0" [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+          <tr>
+            <td colspan="3">Node: Term</td>
+          </tr>
+          <tr>
+            <td colspan="3">Content: 5.0 </td>
+          </tr>
+        </table>>]
+	"root.0.1" -> "root.0.1.0"
+	"root.0.1.0.0" [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+              <TR>
+                <TD COLSPAN="3">Node: 5.0</TD>
+              </TR>
+            </TABLE>>]
+	"root.0.1.0" -> "root.0.1.0.0"
+	"root.0.1.1" [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+              <TR>
+                <TD COLSPAN="3">Node: +</TD>
+              </TR>
+            </TABLE>>]
+	"root.0.1" -> "root.0.1.1"
+	"root.0.1.2" [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+          <tr>
+            <td colspan="3">Node: Simple Expression 2</td>
+          </tr>
+          <tr>
+            <td colspan="3">Content: 5.0 7.0 9.0 ** 0 14.0 12.0 + abs - + </td>
+          </tr>
+        </table>>]
+	"root.0.1" -> "root.0.1.2"
+	"root.0.1.2.0" [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+          <tr>
+            <td colspan="3">Node: Term</td>
+          </tr>
+          <tr>
+            <td colspan="3">Content: 5.0 </td>
+          </tr>
+        </table>>]
+	"root.0.1.2" -> "root.0.1.2.0"
+	"root.0.1.2.0.0" [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+              <TR>
+                <TD COLSPAN="3">Node: 5.0</TD>
+              </TR>
+            </TABLE>>]
+	"root.0.1.2.0" -> "root.0.1.2.0.0"
+	"root.0.1.2.1" [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+              <TR>
+                <TD COLSPAN="3">Node: +</TD>
+              </TR>
+            </TABLE>>]
+	"root.0.1.2" -> "root.0.1.2.1"
+	"root.0.1.2.2" [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+          <tr>
+            <td colspan="3">Node: Simple Expression 2</td>
+          </tr>
+          <tr>
+            <td colspan="3">Content: 7.0 9.0 ** 0 14.0 12.0 + abs - </td>
+          </tr>
+        </table>>]
+	"root.0.1.2" -> "root.0.1.2.2"
+	"root.0.1.2.2.0" [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+          <tr>
+            <td colspan="3">Node: Term</td>
+          </tr>
+          <tr>
+            <td colspan="3">Content: 7.0 9.0 ** </td>
+          </tr>
+        </table>>]
+	"root.0.1.2.2" -> "root.0.1.2.2.0"
+	"root.0.1.2.2.0.0" [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+          <tr>
+            <td colspan="3">Node: Primary</td>
+          </tr>
+          <tr>
+            <td colspan="3">Content: 7.0 </td>
+          </tr>
+        </table>>]
+	"root.0.1.2.2.0" -> "root.0.1.2.2.0.0"
+	"root.0.1.2.2.0.0.0" [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+              <TR>
+                <TD COLSPAN="3">Node: 7.0</TD>
+              </TR>
+            </TABLE>>]
+	"root.0.1.2.2.0.0" -> "root.0.1.2.2.0.0.0"
+	"root.0.1.2.2.0.1" [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+              <TR>
+                <TD COLSPAN="3">Node: **</TD>
+              </TR>
+            </TABLE>>]
+	"root.0.1.2.2.0" -> "root.0.1.2.2.0.1"
+	"root.0.1.2.2.0.2" [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+          <tr>
+            <td colspan="3">Node: Primary</td>
+          </tr>
+          <tr>
+            <td colspan="3">Content: 9.0 </td>
+          </tr>
+        </table>>]
+	"root.0.1.2.2.0" -> "root.0.1.2.2.0.2"
+	"root.0.1.2.2.0.2.0" [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+              <TR>
+                <TD COLSPAN="3">Node: 9.0</TD>
+              </TR>
+            </TABLE>>]
+	"root.0.1.2.2.0.2" -> "root.0.1.2.2.0.2.0"
+	"root.0.1.2.2.1" [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+              <TR>
+                <TD COLSPAN="3">Node: -</TD>
+              </TR>
+            </TABLE>>]
+	"root.0.1.2.2" -> "root.0.1.2.2.1"
+	"root.0.1.2.2.2" [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+          <tr>
+            <td colspan="3">Node: Simple Expression 2</td>
+          </tr>
+          <tr>
+            <td colspan="3">Content: 0 14.0 12.0 + abs </td>
+          </tr>
+        </table>>]
+	"root.0.1.2.2" -> "root.0.1.2.2.2"
+	"root.0.1.2.2.2.0" [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+              <TR>
+                <TD COLSPAN="3">Node: abs</TD>
+              </TR>
+            </TABLE>>]
+	"root.0.1.2.2.2" -> "root.0.1.2.2.2.0"
+	"root.0.1.2.2.2.1" [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+          <tr>
+            <td colspan="3">Node: Primary</td>
+          </tr>
+          <tr>
+            <td colspan="3">Content: 14.0 12.0 + </td>
+          </tr>
+        </table>>]
+	"root.0.1.2.2.2" -> "root.0.1.2.2.2.1"
+	"root.0.1.2.2.2.1.0" [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+              <TR>
+                <TD COLSPAN="3">Node: (</TD>
+              </TR>
+            </TABLE>>]
+	"root.0.1.2.2.2.1" -> "root.0.1.2.2.2.1.0"
+	"root.0.1.2.2.2.1.1" [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+          <tr>
+            <td colspan="3">Node: Expression</td>
+          </tr>
+          <tr>
+            <td colspan="3">Content: 14.0 12.0 + </td>
+          </tr>
+        </table>>]
+	"root.0.1.2.2.2.1" -> "root.0.1.2.2.2.1.1"
+	"root.0.1.2.2.2.1.1.0" [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+          <tr>
+            <td colspan="3">Node: Term</td>
+          </tr>
+          <tr>
+            <td colspan="3">Content: 14.0 </td>
+          </tr>
+        </table>>]
+	"root.0.1.2.2.2.1.1" -> "root.0.1.2.2.2.1.1.0"
+	"root.0.1.2.2.2.1.1.0.0" [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+              <TR>
+                <TD COLSPAN="3">Node: 14.0</TD>
+              </TR>
+            </TABLE>>]
+	"root.0.1.2.2.2.1.1.0" -> "root.0.1.2.2.2.1.1.0.0"
+	"root.0.1.2.2.2.1.1.1" [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+              <TR>
+                <TD COLSPAN="3">Node: +</TD>
+              </TR>
+            </TABLE>>]
+	"root.0.1.2.2.2.1.1" -> "root.0.1.2.2.2.1.1.1"
+	"root.0.1.2.2.2.1.1.2" [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+          <tr>
+            <td colspan="3">Node: Simple Expression 2</td>
+          </tr>
+          <tr>
+            <td colspan="3">Content: 12.0 </td>
+          </tr>
+        </table>>]
+	"root.0.1.2.2.2.1.1" -> "root.0.1.2.2.2.1.1.2"
+	"root.0.1.2.2.2.1.1.2.0" [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+              <TR>
+                <TD COLSPAN="3">Node: 12.0</TD>
+              </TR>
+            </TABLE>>]
+	"root.0.1.2.2.2.1.1.2" -> "root.0.1.2.2.2.1.1.2.0"
+	"root.0.1.2.2.2.1.2" [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+              <TR>
+                <TD COLSPAN="3">Node: )</TD>
+              </TR>
+            </TABLE>>]
+	"root.0.1.2.2.2.1" -> "root.0.1.2.2.2.1.2"
+	"root.1" [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+              <TR>
+                <TD COLSPAN="3">Node: &gt;</TD>
+              </TR>
+            </TABLE>>]
+	root -> "root.1"
+	"root.2" [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+          <tr>
+            <td colspan="3">Node: Relation</td>
+          </tr>
+          <tr>
+            <td colspan="3">Content: 20.0 </td>
+          </tr>
+        </table>>]
+	root -> "root.2"
+	"root.2.0" [label=<
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+              <TR>
+                <TD COLSPAN="3">Node: 20.0</TD>
+              </TR>
+            </TABLE>>]
+	"root.2" -> "root.2.0"
+}

@@ -33,8 +33,8 @@ class StaticAnalyzer:
         for token in tokens:
             if token in ast:
                 ast[token]()
-            else:
-                print(f"Unknown token: {token}")
+            # else:
+            #     print(f"Unknown token: {token}")
         return ast
 
     def analyze(self) -> None:
