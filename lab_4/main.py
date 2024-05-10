@@ -1,7 +1,8 @@
 import typing
 
 
-from test import TestController
+from test_recurtion import TestRecurtionController
+from test_opn import TestOPNController
 from parser_opn import Parser
 from tree import Tree
 from analyzer import StaticAnalyzer
@@ -20,7 +21,8 @@ def main():
         play = int(input("0/1/2 (Exit/Tests/Terminal input)"))
 
         if play == 1:
-            TestController("tests.json").start()
+            TestRecurtionController("tests.json").start()
+            TestOPNController("tests_recurtion.json").start()
         elif play == 2:
             # code = "-5+5+7**9 - abs(14 + 12) > 20"#input("Code: ")
             code = "(a + b) * (c + d) - e"

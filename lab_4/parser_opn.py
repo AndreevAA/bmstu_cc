@@ -177,7 +177,7 @@ class Parser:
 	            self.parse_first,
 	           # actions=lambda a, b: [a.name] + b.content) ->
 	           # actions=lambda a, b: [0] + b.content + [a.name])
-	        ], actions=lambda a, b: [0] + b.content + [a.name]),
+	        ], actions=lambda a, b: b.content + [a.name]),
 	        self.make_combine([
 	            self.make_parse_lexem('not'),
 	            self.parse_first,
